@@ -1,0 +1,43 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,readdirSync,existsSync} from 'node:fs';
+import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+import {brainRegions,brainViews} from '../data/brain.js';
+import {brainSVG} from '../js/brain-svg.js';
+import {nervousRegions} from '../data/nervous.js';
+import {bodySVG} from '../js/body-svg.js';
+import {senses,touchRoutes} from '../data/senses.js';
+import {sensesSVG} from '../js/senses-svg.js';
+import {imageStructures,planes} from '../data/imaging.js';
+import {imagingSVG} from '../js/imaging-svg.js';
+import {anatomy} from '../data/content.js';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const read=p=>readFileSync(resolve(root,p),'utf8').replaceAll('\r\n','\n');
+const ids=svg=>[...svg.matchAll(/data-id="([^"]+)"/g)].map(m=>m[1]).sort();
+test('neurônio conserva oito descrições e controles aprovados',()=>{
+ assert.equal(anatomy.length,8);const s=read('js/neuron.js');
+ for(let i=0;i<8;i++)assert.ok(s.includes(`data-part="${i}"`));
+ for(const id of ['minus','plus','fit','labels','functional'])assert.ok(s.includes(`id="${id}"`));
+ assert.ok(s.includes("e.key==='Enter'||e.key===' '"));
+ assert.ok(s.includes("el.setAttribute('aria-pressed'"));
+});
+test('anatomia e controles do neurônio permanecem idênticos à versão aprovada',()=>{
+ const fixture=JSON.parse(read('tests/neuron-regression.json'));
+ const s=read('js/neuron.js');const code=s.slice(s.indexOf('export function anatomyView()')).replace(/^export /,'').trim();
+ assert.equal(createHash('sha256').update(code).digest('hex'),fixture.codeSHA256);
+ assert.equal(createHash('sha256').update(readFileSync(resolve(root,'data/content.js'))).digest('hex'),fixture.contentSHA256);
+});
+for(const view of Object.keys(brainViews))test(`cérebro: ${view} contém apenas estruturas compatíveis com a vista`,()=>{
+ const svg=brainSVG(view);assert.deepEqual(ids(svg),brainRegions.filter(r=>r.views.includes(view)).map(r=>r.id).sort());
+ assert.ok(!svg.includes('undefined'));assert.ok(!svg.includes('NaN'));
+});
+test('cérebro: estruturas profundas não aparecem na superfície',()=>{assert.ok(!brainSVG('lateral').includes('data-id="hippocampus"'));assert.ok(!brainSVG('superior').includes('data-id="thalamus"'));assert.equal(brainRegions.length,11);for(const r of brainRegions)for(const key of ['name','location','description','relation','fact'])assert.ok(r[key]?.trim().length>0);});
+test('sistema nervoso: central e periférico distinguíveis e selecionáveis',()=>{assert.deepEqual(ids(bodySVG()),['cranial','encephalon','spinal','spinal-nerves'].sort());for(const mode of ['central','peripheral']){const svg=bodySVG(mode);assert.ok(svg.includes('class="system-muted"'));assert.ok(!svg.includes('undefined'));}assert.equal(nervousRegions.length,6);});
+for(const [key,sense] of Object.entries(senses))test(`sentidos: ${sense.name} tem percurso gráfico em cinco etapas`,()=>{assert.equal(sense.steps.length,5);for(let step=0;step<5;step++){const svg=sensesSVG(key,sense,step);assert.deepEqual(ids(svg),['0','1','2','3','4']);assert.ok(!svg.includes('undefined'));assert.ok(svg.includes(`H${92+step*152}`));assert.ok(sense.steps[step].description.length>40);}assert.notEqual(sensesSVG(key,sense,0),sensesSVG(key,sense,4));});
+test('tato: selecionar face evita via incorreta pelas colunas dorsais',()=>{assert.match(touchRoutes.face.peripheral,/trigêmeo/);assert.match(touchRoutes.face.description,/não sobe pelas colunas dorsais/);assert.notEqual(sensesSVG('touch',senses.touch,0,'hand'),sensesSVG('touch',senses.touch,0,'foot'));});
+for(const [plane,p] of Object.entries(planes))for(let level=0;level<3;level++)test(`neuroimagem: ${plane}, nível ${level+1}, concordância de estruturas e desenho`,()=>{const svg=imagingSVG(plane,level);assert.deepEqual(ids(svg),[...p.levels[level].structures].sort());for(const id of ids(svg))assert.ok(imageStructures[id]);assert.ok(!svg.includes('undefined'));assert.ok(svg.includes('não exame real'));});
+test('navegação tem cinco módulos novos e não expõe os quatro retirados',()=>{const html=read('index.html');assert.deepEqual([...html.matchAll(/data-module="([^"]+)"/g)].map(m=>m[1]),['neurons','brain','nervous','senses','imaging']);for(const id of ['potential','conduction','synapse','network'])assert.ok(!html.includes(`data-module="${id}"`));assert.ok(html.includes('https://divisaosete.com/new-era-labs/'));assert.ok(html.includes('Per Vitam, Ad Astra.'));});
+test('caminhos relativos de todos os módulos e recursos resolvem em subdiretório',()=>{const walk=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(resolve(dir,e.name)):[resolve(dir,e.name)]);for(const file of walk(resolve(root,'js')).concat(walk(resolve(root,'data')))){const s=readFileSync(file,'utf8');for(const match of s.matchAll(/from\s+['"]([^'"]+)['"]/g)){assert.ok(match[1].startsWith('.'));assert.ok(existsSync(resolve(dirname(file),match[1])),`${file}: ${match[1]}`);}}for(const match of read('index.html').matchAll(/(?:src|href)="([^"#]+)"/g)){if(/^(https?:|#)/.test(match[1]))continue;assert.ok(existsSync(resolve(root,match[1])),match[1]);}});
+test('acessibilidade: teclado, seleção equivalente e movimento reduzido',()=>{assert.match(read('js/ui.js'),/tabindex/);assert.match(read('js/ui.js'),/e.key==='Enter'/);assert.match(read('js/ui.js'),/aria-pressed/);assert.match(read('js/ui.js'),/aria-live="polite"/);assert.match(read('atlas.css'),/prefers-reduced-motion/);assert.match(read('atlas.css'),/max-width:800px/);});

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#08111d"><meta name="description" content="Neural Explorer 2.0: atlas interativo de neurociência do New Era Labs. Explore neurônios, cérebro, sistema nervoso, sentidos e cortes anatômicos.">
+ <title>Neural Explorer 2.0 · New Era Labs</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="atlas.css">
+</head>
+<body>
+ <a class="skip" href="#workspace">Pular para o atlas interativo</a>
+ <header>
+  <a class="brand" href="#neurons" aria-label="Neural Explorer, início"><span class="mark">N<span>∿</span></span><span>NEW ERA LABS<small>DIVISÃO 7 · CIÊNCIA ABERTA</small></span></a>
+  <span class="edition">UM CONVITE À DESCOBERTA <b>NEUROCIÊNCIA / ATLAS 02</b></span>
+  <a class="portal" href="https://divisaosete.com/new-era-labs/">← Voltar ao New Era Labs</a>
+ </header>
+ <main>
+  <section class="intro"><div><p class="eyebrow"><span class="dot"></span> ANATOMIA PARA EXPLORAR. CONEXÕES PARA COMPREENDER.</p><h1>NEURAL <em>EXPLORER</em><sup>2.0</sup></h1><p class="subtitle">Atlas Interativo de Neurociência</p></div><div class="intro-note"><span>DA CÉLULA AO SISTEMA</span><div>Observe <i>→</i> Selecione <i>→</i> Descubra</div><small>Explore livremente. A curiosidade é seu ponto de partida.</small></div></section>
+  <nav aria-label="Módulos do atlas" id="tabs">
+   <button data-module="neurons" class="active"><span class="nav-number">01</span><span class="nav-name">Neurônios</span><span class="nav-icon">⌁</span></button>
+   <button data-module="brain"><span class="nav-number">02</span><span class="nav-name">Cérebro</span><span class="nav-icon">◉</span></button>
+   <button data-module="nervous"><span class="nav-number">03</span><span class="nav-name">Sistema Nervoso</span><span class="nav-icon">⑂</span></button>
+   <button data-module="senses"><span class="nav-number">04</span><span class="nav-name">Sentidos</span><span class="nav-icon">◎</span></button>
+   <button data-module="imaging"><span class="nav-number">05</span><span class="nav-name">Neuroimagem</span><span class="nav-icon">▤</span></button>
+  </nav>
+  <section class="module-intro" aria-labelledby="module-title"><span id="module-number">01</span><div><h2 id="module-title">A unidade da comunicação</h2><p id="module-description">Explore as estruturas de um neurônio.</p></div><span class="desktop-note">DESENHOS EXPLORÁVEIS<br>CONHECIMENTO ABERTO</span></section>
+  <div id="workspace" tabindex="-1"></div>
+  <section class="learning"><span class="book" aria-hidden="true">↗</span><div><p class="eyebrow">UMA PERGUNTA PARA COMEÇAR</p><h3 id="question"></h3><p id="challenge"></p></div><button id="next-module">Próximo módulo →</button></section>
+  <div class="bottom-line"><span id="progress-label">Módulo 01 de 05</span><span>Ilustrações educativas · anatomia simplificada · sem finalidade clínica</span></div>
+  <details class="methods"><summary>Fontes científicas, créditos e limites do atlas</summary><div class="source-grid"><div><h3>Conhecimento fundamentado</h3><p>Funções cerebrais complexas envolvem redes distribuídas. As cores identificam regiões, sem representar atividade, lesão ou propriedades de um exame.</p><ul><li><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/13-2-the-central-nervous-system" target="_blank" rel="noopener">OpenStax · Sistema nervoso central ↗</a></li><li><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/13-4-the-peripheral-nervous-system" target="_blank" rel="noopener">OpenStax · Sistema nervoso periférico ↗</a></li><li><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/14-1-sensory-perception" target="_blank" rel="noopener">OpenStax · Percepção sensorial ↗</a></li><li><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/14-2-central-processing" target="_blank" rel="noopener">OpenStax · Processamento central ↗</a></li><li><a href="https://www.brainfacts.org/brain-anatomy-and-function/anatomy/2022/major-brain-landmarks-110822" target="_blank" rel="noopener">BrainFacts / SfN · Referências anatômicas ↗</a></li></ul></div><div><h3>Ilustrações, não exames</h3><p>Todos os desenhos são SVGs originais criados para este projeto. Não há fotografias de pacientes, exames reais ou imagens de origem desconhecida. Os cortes de neuroimagem são nove esquemas discretos, sem volume de ressonância ou distâncias calibradas.</p><p>Giros, limites, proporções e ramificações são aproximações. Há estruturas e vias omitidas; as indicações de cada módulo explicitam as simplificações. Não se destinam a diagnóstico ou interpretação clínica.</p><a href="CREDITS.md">Ver créditos, licenças e referências completas →</a></div></div></details>
+ </main>
+ <footer><span>NEW ERA LABS <span class="muted">| DIVISÃO 7</span></span><div><strong>Per Vitam, Ad Astra.</strong><br>Uma iniciativa da Divisão 7.</div><span>NEURAL EXPLORER v2.0<br>Ciência aberta. Exploração livre.</span></footer>
+ <script type="module" src="js/app.js"></script>
+</body></html>
